@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sklep Discord</title>
+    <style>
+        /* Stylizacja tła */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(45deg, #87CEEB, #DA70D6);
+            animation: backgroundAnimation 8s ease infinite;
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
+
+        /* Animacja tła */
+        @keyframes backgroundAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Styl formularza i cennika */
+        .shop-container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Styl cennika */
+        .price-list {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f0f8ff;
+            border-radius: 8px;
+        }
+
+        .price-list h3 {
+            margin: 0 0 10px;
+            font-size: 20px;
+            color: #333;
+        }
+
+        .price-item {
+            font-size: 16px;
+            margin: 5px 0;
+        }
+
+        /* Styl pól tekstowych i przycisku */
+        input[type="text"], input[type="number"], select {
+            width: 80%;
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="shop-container">
+        <!-- Sekcja Cennik -->
+        <div class="price-list">
+            <h3>Cennik Odbiór Na Ticket</h3>
+            <div class="price-item">Auto / Helikopter Limitowany - 50 PLN</div>
+            <div class="price-item">Interior Z Firmą - 50 PLN</div>
+            <div class="price-item">Interior - 45 PLN</div>
+            <div class="price-item">Motor - 40 PLN</div>
+            <div class="price-item">Starter Pack - 30 PLN</div>
+            <div class="price-item">Informacja O Dark Shop - 20 PLN</div>
+            <div class="price-item">Informacja o Nie Leganlnym Sklepie Weed - 15 PLN</div>
+            <div class="price-item">Iformacje O Sklepie Do Napadów - 10 PLN</div>
+        </div>
+
+        <!-- Formularz zamówienia -->
+        <div class="order-form">
+            <h2>Zamów produkt</h2>
+            
+            <!-- Wybór produktu -->
+            <select id="product" onchange="updatePrice()" required>
+                <option value="" disabled selected>Wybierz produkt</option>
+                <option value="Limitka" data-price="50">Limitka</option>
+                <option value="Firma z Interiorem" data-price="50">Firma z Interiorem</option>
+                <option value="Interior" data-price="45">Interior</option>
+                <option value="Motor" data-price="40">Motor</option>
+                <option value="Starter Pack" data-price="30">Starter Pack</option>
+                <option value="Informacja O Dark Shop" data-price="20">Informacja O Dark Shop</option>
+                <option value="Informacja O Sklepie Weed" data-price="15">Informacja O Sklepie Weed</option>
+                <option value="Informacja O Sklepie Do Napadów" data-price="10">Informacja O Sklepie Do Napadów</option>
+            </select>
+
+            <!-- Ilość i cena całkowita -->
+            <input type="number" id="quantity" placeholder="Ilość" min="1" value="1" onchange="updatePrice()" required>
+            <div id="totalPrice">Kwota: 0 PLN</div>
+            
+            <!-- Nick Discorda -->
+            <input type="text" id="discordName" placeholder="Twoje imię na Discord" required>
+            
+            <!-- Wybór metody płatności -->
+            <select id="paymentMethod" required>
+                <option value="" disabled selected>Wybierz metodę płatności</option>
+                <option value="Blik">Blik</option>
+                <option value="Paysafecard">Paysafecard</option>
+            </select>
+            
+            <button onclick="sendOrder()">Zamów</button>
+        </div>
+    </div>
+
+    <script>
+        function updatePrice() {
+            const productSelect = document.getElementById("product");
+            const quantity = document.getElementById("quantity").value;
+            const selectedOption = productSelect.options[productSelect.selectedIndex];
+            const price = selectedOption.getAttribute("data-price");
+
+            if (price && quantity) {
+                const total = price * quantity;
+                document.getElementById("totalPrice").textContent = `Kwota: ${total} PLN`;
+            }
+        }
+
+        function sendOrder() {
+            const productSelect = document.getElementById("product");
+            const product = productSelect.options[productSelect.selectedIndex].text;
+            const quantity = document.getElementById("quantity").value;
+            const discordName = document.getElementById("discordName").value;
+            const paymentMethod = document.getElementById("paymentMethod").value;
+            const totalPrice = document.getElementById("totalPrice").textContent.replace("Kwota: ", "").replace(" PLN", "");
+
+            if (!product || !quantity || !discordName || !paymentMethod) {
+                alert("Wszystkie pola są wymagane!");
+                return;
+            }
+
+            const data = {
+                content: ` Zamówienie:\n**Produkt**: ${product}\n**Ilość**: ${quantity}\n**Discord**: ${discordName}\n**Metoda płatności**: ${paymentMethod}\n**Kwota**: ${totalPrice} PLN`
+            };
+
+            fetch("https://discord.com/api/webhooks/1299247551517823027/PZyl_eAQ0JF-oHwlVvlOIzfCrLfiemKhctntNAor1CJ2HIwkjesMxPUV6WRSv6Q48v68", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Zamówienie zostało wysłane!");
+                    document.getElementById("product").value = "";
+                    document.getElementById("quantity").value = 1;
+                    document.getElementById("discordName").value = "";
+                    document.getElementById("paymentMethod").value = "";
+                    document.getElementById("totalPrice").textContent = "Kwota: 0 PLN";
+                } else {
+                    alert("Wystąpił błąd przy wysyłaniu zamówienia.");
+                }
+            })
+            .catch(error => console.error("Błąd:", error));
+        }
+    </script>
+
+</body>
+</html>
