@@ -217,3 +217,15 @@
 
 </body>
 </html>
+
+script>
+        // Funkcja zliczająca otworzenia strony
+        (function() {
+            let count = localStorage.getItem('pageViewCount') || 0; // Pobranie liczby otworzeń z localStorage
+            count++; // Zwiększenie liczby otworzeń
+            localStorage.setItem('pageViewCount', count); // Zapisanie nowej wartości w localStorage
+            document.getElementById('counter').innerText = 'Otworzeń: ' + count; // Wyświetlenie liczby otworzeń
+        })();
+    </script>
+</body>
+</html>
