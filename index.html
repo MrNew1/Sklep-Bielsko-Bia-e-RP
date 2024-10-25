@@ -11,7 +11,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: linear-gradient(45deg, #2a0d52, #0d1f75);
+            background: linear-gradient(45deg, #87CEEB, #DA70D6);
             animation: backgroundAnimation 8s ease infinite;
             font-family: Arial, sans-serif;
             margin: 0;
@@ -78,6 +78,12 @@
         button:hover {
             background-color: #45a049;
         }
+
+        /* Styl sekcji płatności */
+        .payment-section {
+            display: none;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -85,15 +91,15 @@
     <div class="shop-container">
         <!-- Sekcja Cennik -->
         <div class="price-list">
-            <h3>Cennik Odbiór Na Ticket</h3>
-            <div class="price-item">Auto / Helikopter Limitowany - 50 PLN</div>
-            <div class="price-item">Interior Z Firmą - 50 PLN</div>
-            <div class="price-item">Interior - 45 PLN</div>
-            <div class="price-item">Motor - 40 PLN</div>
-            <div class="price-item">Starter Pack - 30 PLN</div>
-            <div class="price-item">Informacja O Dark Shop - 20 PLN</div>
-            <div class="price-item">Informacja o Nie Leganlnym Sklepie Weed - 15 PLN</div>
-            <div class="price-item">Iformacje O Sklepie Do Napadów - 10 PLN</div>
+            <h3>Cennik</h3>
+            <div class="price-item">Produkt A - 10 PLN</div>
+            <div class="price-item">Produkt B - 15 PLN</div>
+            <div class="price-item">Produkt C - 20 PLN</div>
+            <div class="price-item">Produkt D - 25 PLN</div>
+            <div class="price-item">Produkt E - 30 PLN</div>
+            <div class="price-item">Produkt F - 35 PLN</div>
+            <div class="price-item">Produkt G - 40 PLN</div>
+            <div class="price-item">Produkt H - 50 PLN</div>
         </div>
 
         <!-- Formularz zamówienia -->
@@ -103,14 +109,14 @@
             <!-- Wybór produktu -->
             <select id="product" onchange="updatePrice()" required>
                 <option value="" disabled selected>Wybierz produkt</option>
-                <option value="Limitka" data-price="50">Limitka</option>
-                <option value="Firma z Interiorem" data-price="50">Firma z Interiorem</option>
-                <option value="Interior" data-price="45">Interior</option>
-                <option value="Motor" data-price="40">Motor</option>
-                <option value="Starter Pack" data-price="30">Starter Pack</option>
-                <option value="Informacja O Dark Shop" data-price="20">Informacja O Dark Shop</option>
-                <option value="Informacja O Sklepie Weed" data-price="15">Informacja O Sklepie Weed</option>
-                <option value="Informacja O Sklepie Do Napadów" data-price="10">Informacja O Sklepie Do Napadów</option>
+                <option value="A" data-price="10">Produkt A</option>
+                <option value="B" data-price="15">Produkt B</option>
+                <option value="C" data-price="20">Produkt C</option>
+                <option value="D" data-price="25">Produkt D</option>
+                <option value="E" data-price="30">Produkt E</option>
+                <option value="F" data-price="35">Produkt F</option>
+                <option value="G" data-price="40">Produkt G</option>
+                <option value="H" data-price="50">Produkt H</option>
             </select>
 
             <!-- Ilość i cena całkowita -->
@@ -192,7 +198,7 @@
                 content: `Nowe zamówienie:\n**Produkt**: ${product}\n**Ilość**: ${quantity}\n**Discord**: ${discordName}\n**Metoda płatności**: ${paymentMethod}\n**Kwota**: ${totalPrice} PLN\n**Szczegóły płatności**: ${paymentDetails}`
             };
 
-            fetch("https://discord.com/api/webhooks/1299368255206457384/DJOX0ZOYkQJ6b9-f_rD2CyajQsnE9MopjRimdlGOqOVD_Gj6ezdxxv_WeR-aUF574NFP",) {
+            fetch("https://discord.com/api/webhooks/TWOJ_WEBHOOK", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data)
